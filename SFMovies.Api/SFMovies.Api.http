@@ -1,0 +1,6 @@
+@SFMovies.Api_HostAddress = http://localhost:5220
+
+GET {{SFMovies.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
