@@ -1,6 +1,6 @@
 using MediatR;
-using SFMovies.Domain.Entities;
+using SFMovies.Application.DTOs;
 
 namespace SFMovies.Application.Queries;
 
-public record GetMovieLocationByIdQuery(int Id) : IRequest<MovieLocation?>;
+public record GetMovieLocationByIdQuery(int Id) : IRequest<MovieLocationDto?>;

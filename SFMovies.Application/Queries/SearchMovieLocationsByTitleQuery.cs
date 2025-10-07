@@ -1,6 +1,6 @@
 using MediatR;
-using SFMovies.Domain.Entities;
+using SFMovies.Application.DTOs;
 
 namespace SFMovies.Application.Queries;
 
-public record SearchMovieLocationsByTitleQuery(string Title) : IRequest<IEnumerable<MovieLocation>>;
+public record SearchMovieLocationsByTitleQuery(string Title) : IRequest<IEnumerable<MovieLocationDto>>;

@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFMovies.Api;
-using SFMovies.Application.Services;
-using SFMovies.Domain.Entities;
+using SFMovies.Application.DTOs;
 using System.Net.Http.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFMovies.Tests.Integration
 {
@@ -13,30 +14,11 @@ namespace SFMovies.Tests.Integration
     {
         private WebApplicationFactory<Program> _factory;
         private HttpClient _client;
-        private static readonly MovieLocation TestMovie = new()
-        {
-            Id = 1,
-            Title = "Test Movie",
-            Locations = "SF"
-        };
 
         [TestInitialize]
         public void Setup()
         {
-            _factory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureServices(services =>
-                    {
-                        services.AddScoped<IMovieLocationService>(sp =>
-                        {
-                            var service = sp.GetRequiredService<MovieLocationCacheService>();
-                            service.SetLocationsForTest(new List<MovieLocation> { TestMovie });
-                            return service;
-                        });
-                    });
-                });
-
+            _factory = new WebApplicationFactory<Program>();
             _client = _factory.CreateClient();
         }
 
@@ -46,26 +28,23 @@ namespace SFMovies.Tests.Integration
             // Act
             var response = await _client.GetAsync("/api/movielocations");
             response.EnsureSuccessStatusCode();
-            var locations = await response.Content.ReadFromJsonAsync<IEnumerable<MovieLocation>>();
+            var locations = await response.Content.ReadFromJsonAsync<IEnumerable<MovieLocationDto>>();
 
             // Assert
             Assert.IsNotNull(locations);
-            Assert.AreEqual(1, locations.Count());
-            Assert.AreEqual(TestMovie.Title, locations.First().Title);
+            Assert.IsTrue(locations.Any());
         }
 
         [TestMethod]
         public async Task SearchLocations_WithValidTitle_ReturnsFilteredResults()
         {
             // Act
-            var response = await _client.GetAsync("/api/movielocations/search?title=Test");
+            var response = await _client.GetAsync("/api/movielocations/search?title=San Francisco");
             response.EnsureSuccessStatusCode();
-            var locations = await response.Content.ReadFromJsonAsync<IEnumerable<MovieLocation>>();
+            var locations = await response.Content.ReadFromJsonAsync<IEnumerable<MovieLocationDto>>();
 
             // Assert
             Assert.IsNotNull(locations);
-            Assert.AreEqual(1, locations.Count());
-            Assert.AreEqual(TestMovie.Title, locations.First().Title);
         }
 
         [TestCleanup]

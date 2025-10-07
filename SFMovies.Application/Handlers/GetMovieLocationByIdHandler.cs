@@ -1,19 +1,19 @@
 using MediatR;
 using SFMovies.Application.Queries;
-using SFMovies.Application.Services;
-using SFMovies.Domain.Entities;
+using SFMovies.Application.Interfaces;
+using SFMovies.Application.DTOs;
 
 namespace SFMovies.Application.Handlers;
 
-public class GetMovieLocationByIdHandler : IRequestHandler<GetMovieLocationByIdQuery, MovieLocation?>
+public class GetMovieLocationByIdHandler : IRequestHandler<GetMovieLocationByIdQuery, MovieLocationDto?>
 {
     private readonly IMovieLocationService _service;
     public GetMovieLocationByIdHandler(IMovieLocationService service)
     {
         _service = service;
     }
-    public async Task<MovieLocation?> Handle(GetMovieLocationByIdQuery request, CancellationToken cancellationToken)
+    public async Task<MovieLocationDto?> Handle(GetMovieLocationByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _service.GetLocationByIdAsync(request.Id);
+        return await _service.GetByIdAsync(request.Id, cancellationToken);
     }
 }

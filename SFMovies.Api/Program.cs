@@ -3,10 +3,11 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using SFMovies.Application.Services;
 using SFMovies.Api.Middleware;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
+using SFMovies.Infrastructure.Services;
+using SFMovies.Application.Interfaces;
 
 namespace SFMovies.Api;
 
@@ -28,11 +29,10 @@ public class Program
             c.EnableAnnotations();
         });
 
-        // Memory Cache
+        // Memory Cache y HttpClient
         builder.Services.AddMemoryCache();
-
-        // MovieLocation cache service registration
-        builder.Services.AddScoped<IMovieLocationService, MovieLocationCacheService>();
+        builder.Services.AddHttpClient();
+        builder.Services.AddSingleton<IMovieLocationService, SFMovieApiService>();
 
         // MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(SFMovies.Application.Queries.GetAllMovieLocationsQuery).Assembly));

@@ -1,5 +1,5 @@
 using FluentValidation;
-using SFMovies.Application.Dto;
+using SFMovies.Application.DTOs;
 
 namespace SFMovies.Application.Validators;
 
